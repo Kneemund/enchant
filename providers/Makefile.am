@@ -49,12 +49,12 @@ endif
 enchant_voikko_la_CFLAGS = $(AM_CFLAGS) $(VOIKKO_CFLAGS)
 enchant_voikko_la_LIBADD = $(VOIKKO_LIBS)
 
-if WITH_WIN8
-provider_LTLIBRARIES += enchant_win8.la
+if WITH_WINSPELL
+provider_LTLIBRARIES += enchant_winspell.la
 endif
-enchant_win8_la_CXXFLAGS = $(AM_CXXFLAGS) $(WIN8_CFLAGS)
-enchant_win8_la_LIBADD = $(WIN8_LIBS)
-enchant_win8_la_SOURCES = enchant_win8.cpp
+enchant_winspell_la_CXXFLAGS = $(AM_CXXFLAGS) $(WINSPELL_CFLAGS)
+enchant_winspell_la_LIBADD = $(WINSPELL_LIBS)
+enchant_winspell_la_SOURCES = enchant_winspell.cpp
 
 if WITH_ZEMBEREK
 provider_LTLIBRARIES += enchant_zemberek.la

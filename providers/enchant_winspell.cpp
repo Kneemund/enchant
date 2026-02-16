@@ -105,7 +105,7 @@ enumstring_to_chararray(IEnumString* strings, size_t* out_len, gboolean tags_fro
 /* ---------- Dict ------------ */
 
 static void
-win8_dict_add_to_session(EnchantProviderDict* dict, const char* const word, size_t len)
+winspell_dict_add_to_session(EnchantProviderDict* dict, const char* const word, size_t len)
 {
 	auto checker = static_cast<ISpellChecker*>(dict->user_data);
 	LPWSTR w_word = (LPWSTR)g_utf8_to_utf16(word, (glong)len, nullptr, nullptr, nullptr);
@@ -117,7 +117,7 @@ win8_dict_add_to_session(EnchantProviderDict* dict, const char* const word, size
 }
 
 static void
-win8_dict_remove_from_session(EnchantProviderDict* dict, const char* const word, size_t len)
+winspell_dict_remove_from_session(EnchantProviderDict* dict, const char* const word, size_t len)
 {
 	auto checker = static_cast<ISpellChecker*>(dict->user_data);
 
@@ -136,7 +136,7 @@ win8_dict_remove_from_session(EnchantProviderDict* dict, const char* const word,
 }
 
 static int
-win8_dict_check(EnchantProviderDict* dict, const char* const word, size_t len)
+winspell_dict_check(EnchantProviderDict* dict, const char* const word, size_t len)
 {
 	auto checker = static_cast<ISpellChecker*>(dict->user_data);
 	LPWSTR w_word = (LPWSTR)g_utf8_to_utf16(word, (glong)len, nullptr, nullptr, nullptr);
@@ -165,7 +165,7 @@ win8_dict_check(EnchantProviderDict* dict, const char* const word, size_t len)
 }
 
 static char**
-win8_dict_suggest(EnchantProviderDict* dict, const char* const word, size_t len, size_t* out_n_suggs)
+winspell_dict_suggest(EnchantProviderDict* dict, const char* const word, size_t len, size_t* out_n_suggs)
 {
 	auto checker = static_cast<ISpellChecker*>(dict->user_data);
 	LPWSTR w_word = (LPWSTR)g_utf8_to_utf16(word, (glong)len, nullptr, nullptr, nullptr);
@@ -190,7 +190,7 @@ win8_dict_suggest(EnchantProviderDict* dict, const char* const word, size_t len,
 /* ---------- Provider ------------ */
 
 static EnchantProviderDict*
-win8_provider_request_dict(EnchantProvider* provider, const char* const xpg_tag)
+winspell_provider_request_dict(EnchantProvider* provider, const char* const xpg_tag)
 {
 	auto factory = static_cast<ISpellCheckerFactory*>(provider->user_data);
 
@@ -216,16 +216,16 @@ win8_provider_request_dict(EnchantProvider* provider, const char* const xpg_tag)
 	EnchantProviderDict* dict = enchant_provider_dict_new(provider, xpg_tag);
 	dict->user_data = checker;
 
-	dict->suggest = win8_dict_suggest;
-	dict->check = win8_dict_check;
-	dict->add_to_session = win8_dict_add_to_session;
-	dict->remove_from_session = win8_dict_remove_from_session;
+	dict->suggest = winspell_dict_suggest;
+	dict->check = winspell_dict_check;
+	dict->add_to_session = winspell_dict_add_to_session;
+	dict->remove_from_session = winspell_dict_remove_from_session;
 
 	return dict;
 }
 
 static void
-win8_provider_dispose_dict(_GL_UNUSED EnchantProvider* provider, EnchantProviderDict* dict)
+winspell_provider_dispose_dict(_GL_UNUSED EnchantProvider* provider, EnchantProviderDict* dict)
 {
 	if (dict) {
 		auto checker = static_cast<ISpellChecker*>(dict->user_data);
@@ -234,7 +234,7 @@ win8_provider_dispose_dict(_GL_UNUSED EnchantProvider* provider, EnchantProvider
 }
 
 static int
-win8_provider_dictionary_exists(EnchantProvider* provider, const char* const xpg_tag)
+winspell_provider_dictionary_exists(EnchantProvider* provider, const char* const xpg_tag)
 {
 	auto factory = static_cast<ISpellCheckerFactory*>(provider->user_data);
 
@@ -257,7 +257,7 @@ win8_provider_dictionary_exists(EnchantProvider* provider, const char* const xpg
 }
 
 static char**
-win8_provider_list_dicts(EnchantProvider* provider, size_t* out_n_dicts)
+winspell_provider_list_dicts(EnchantProvider* provider, size_t* out_n_dicts)
 {
 	auto factory = static_cast<ISpellCheckerFactory*>(provider->user_data);
 
@@ -271,7 +271,7 @@ win8_provider_list_dicts(EnchantProvider* provider, size_t* out_n_dicts)
 }
 
 static void
-win8_provider_dispose(EnchantProvider* provider)
+winspell_provider_dispose(EnchantProvider* provider)
 {
 	if (provider) {
 		auto factory = static_cast<ISpellCheckerFactory*>(provider->user_data);
@@ -282,15 +282,15 @@ win8_provider_dispose(EnchantProvider* provider)
 }
 
 static const char*
-win8_provider_identify(_GL_UNUSED EnchantProvider* provider)
+winspell_provider_identify(_GL_UNUSED EnchantProvider* provider)
 {
-    return "win8";
+    return "winspell";
 }
 
 static const char*
-win8_provider_describe(_GL_UNUSED EnchantProvider* provider)
+winspell_provider_describe(_GL_UNUSED EnchantProvider* provider)
 {
-    return "Windows 8 SpellCheck Provider";
+    return "WinSpell Provider";
 }
 
 extern "C" EnchantProvider*
@@ -316,13 +316,13 @@ init_enchant_provider(void)
 	EnchantProvider* provider = enchant_provider_new();
 	provider->user_data = factory;
 
-	provider->dispose = win8_provider_dispose;
-	provider->request_dict = win8_provider_request_dict;
-	provider->dispose_dict = win8_provider_dispose_dict;
-	provider->dictionary_exists = win8_provider_dictionary_exists;
-	provider->identify = win8_provider_identify;
-	provider->describe = win8_provider_describe;
-	provider->list_dicts = win8_provider_list_dicts;
+	provider->dispose = winspell_provider_dispose;
+	provider->request_dict = winspell_provider_request_dict;
+	provider->dispose_dict = winspell_provider_dispose_dict;
+	provider->dictionary_exists = winspell_provider_dictionary_exists;
+	provider->identify = winspell_provider_identify;
+	provider->describe = winspell_provider_describe;
+	provider->list_dicts = winspell_provider_list_dicts;
 
 	return provider;
 }

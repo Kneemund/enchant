@@ -217,18 +217,18 @@ ENCHANT_CHECK_LIB_PROVIDER([aspell], [ASPELL], [get_aspell_dict_info_list],,, [A
 ENCHANT_CHECK_LIB_PROVIDER([hspell], [HSPELL], [hspell_get_dictionary_path],, [-lz], [HSPELL_H])
 ENCHANT_CHECK_PKG_CONFIG_PROVIDER([voikko], [VOIKKO], [libvoikko])
 
-dnl Windows 8 Spell Checking API provider
+dnl WinSpell provider
 if test "$native_win32" = "yes"; then
   AC_LANG_PUSH([C++])
   AC_CHECK_HEADERS([spellcheck.h], [HAVE_SPELLCHECK_H=yes])
-  ENCHANT_CHECK_LIB_PROVIDER([win8], [WIN8], [NOLIB],, [-lole32 -loleaut32 -luuid], [SPELLCHECK_H])
+  ENCHANT_CHECK_LIB_PROVIDER([winspell], [WINSPELL], [NOLIB],, [-lole32 -loleaut32 -luuid], [SPELLCHECK_H])
   AC_LANG_POP([C++])
 fi
 dnl Must call AM_CONDITIONAL outside conditional
-AM_CONDITIONAL(WITH_WIN8, test "$with_win8" = yes)
-dnl Add Windows target to CFLAGS.
-AS_IF([test "$with_win8" = yes],
-  [WIN8_CFLAGS="-D_WIN32_WINNT=_WIN32_WINNT_WIN8 -DNTDDI_VERSION=NTDDI_WIN8" AC_SUBST([WIN8_CFLAGS])])
+AM_CONDITIONAL(WITH_WINSPELL, test "$with_winspell" = yes)
+dnl Set target to Windows 8 using CFLAGS.
+WINSPELL_CFLAGS="-D_WIN32_WINNT=_WIN32_WINNT_WIN8 -DNTDDI_VERSION=NTDDI_WIN8"
+AC_SUBST([WINSPELL_CFLAGS])
 
 dnl FIXME: The test below assumes GCC(-compatible) ObjC++ compiler, but
 dnl OBJCXX is set even if no compiler is found.
